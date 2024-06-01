@@ -147,3 +147,6 @@ BikeShopYoungsterText:
 .CoolBikeText:
 	text_far _BikeShopYoungsterCoolBikeText
 	text_end
+
+UnusedBikeShopClerkText:: ; unreferenced
+	script_mart BICYCLE
