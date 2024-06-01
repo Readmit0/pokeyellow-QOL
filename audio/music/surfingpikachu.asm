@@ -1,4 +1,5 @@
 Music_SurfingPikachu_Ch1::
+	sound_ret
 	tempo 117
 	volume 7, 7
 	duty_cycle 3
@@ -161,6 +162,7 @@ Music_SurfingPikachu_Ch1::
 	sound_loop 0, .mainloop
 
 Music_SurfingPikachu_Ch2::
+	sound_ret
 	duty_cycle 3
 	vibrato 6, 1, 5
 	note_type 12, 12, 4
@@ -309,6 +311,7 @@ Music_SurfingPikachu_Ch2::
 	sound_loop 0, .mainloop
 
 Music_SurfingPikachu_Ch3::
+	sound_ret
 	note_type 12, 1, 0
 	octave 4
 	note B_, 6
