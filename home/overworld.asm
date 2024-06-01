@@ -240,7 +240,7 @@ OverworldLoopLessDelay::
 	res 2, [hl]
 	xor a
 	ld [wd435], a
-	call DoBikeSpeedup
+	call DoubleSpeedConditionally
 	call AdvancePlayerSprite
 	ld a, [wWalkCounter]
 	and a
@@ -335,11 +335,13 @@ NewBattle::
 	and a
 	ret
 
-; function to make bikes twice as fast as walking
-DoBikeSpeedup::
+; originally a function that makes biking twice as fast
+; now also speeds up surfing
+DoubleSpeedConditionally::
 	ld a, [wWalkBikeSurfState]
-	dec a ; riding a bike?
-	ret nz
+	cp $00 ; value for walking state, see wram.asm
+	jr z, .checkIfRunning
+.applyDoubleSpeed
 	ld a, [wd736]
 	bit 6, a
 	ret nz
@@ -349,12 +351,18 @@ DoBikeSpeedup::
 	ld a, [wCurMap]
 	cp ROUTE_17 ; Cycling Road
 	jr nz, .goFaster
-	ldh a, [hJoyHeld]
+	ld a, [hJoyHeld]
 	and D_UP | D_LEFT | D_RIGHT
 	ret nz
 .goFaster
 	call AdvancePlayerSprite
 	ret
+.checkIfRunning
+	ld a, [hJoyHeld]
+	and B_BUTTON
+	jr nz, .applyDoubleSpeed
+	ret ; player was not holding the run button: dont apply extra speed.
+
 
 ; check if the player has stepped onto a warp after having not collided
 CheckWarpsNoCollision::
