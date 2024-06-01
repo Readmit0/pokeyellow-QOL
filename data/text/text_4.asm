@@ -3,24 +3,9 @@ _FileDataDestroyedText::
 	line "destroyed!"
 	prompt
 
-_WouldYouLikeToSaveText::
-	text "Would you like to"
-	line "SAVE the game?"
-	done
-
-_SavingText::
-	text "Saving..."
-	done
-
 _GameSavedText::
 	text "<PLAYER> saved"
 	line "the game!"
-	done
-
-_OlderFileWillBeErasedText::
-	text "The older file"
-	line "will be erased to"
-	cont "save. Okay?"
 	done
 
 _WhenYouChangeBoxText::
