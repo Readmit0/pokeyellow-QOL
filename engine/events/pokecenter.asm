@@ -4,26 +4,15 @@ DisplayPokemonCenterDialogue_::
 	jr nz, .regularCenter
 	call CheckPikachuFollowingPlayer
 	jr z, .regularCenter
-	ld hl, LooksContentText ; if pikachu is sleeping, don't heal
+	;ld hl, LooksContentText ; if pikachu is sleeping, don't heal
 	call PrintText
 	ret
 .regularCenter
 	call SaveScreenTilesToBuffer1 ; save screen
-	ld hl, PokemonCenterWelcomeText
-	call PrintText
 	ld hl, wd72e
 	bit 2, [hl]
 	set 1, [hl]
 	set 2, [hl]
-	jr nz, .skipShallWeHealYourPokemon
-	ld hl, ShallWeHealYourPokemonText
-	call PrintText
-.skipShallWeHealYourPokemon
-	call YesNoChoicePokeCenter ; yes/no menu
-	call UpdateSprites
-	ld a, [wCurrentMenuItem]
-	and a
-	jp nz, .declinedHealing ; if the player chose No
 	call SetLastBlackoutMap
 	callfar IsStarterPikachuInOurParty
 	jr nc, .notHealingPlayerPikachu
@@ -37,7 +26,6 @@ DisplayPokemonCenterDialogue_::
 	ld hl, NeedYourPokemonText
 	call PrintText
 	ld c, 64
-	call DelayFrames
 	call CheckPikachuFollowingPlayer
 	jr nz, .playerPikachuNotOnScreen
 	call DisablePikachuOverworldSpriteDrawing
@@ -47,17 +35,13 @@ DisplayPokemonCenterDialogue_::
 	lb bc, 1, 8
 	call Func_6ebb
 	ld c, 30
-	call DelayFrames
-	farcall AnimateHealingMachine ; do the healing machine animation
 	predef HealParty
+	farcall AnimateHealingMachine; do the healing machine animation
 	xor a
-	ld [wAudioFadeOutControl], a
-	ld a, [wAudioSavedROMBank]
-	ld [wAudioROMBank], a
-	ld a, [wMapMusicSoundID]
-	ld [wLastMusicSoundID], a
-	ld [wNewSoundID], a
-	call PlaySound
+	farcall AutoTextBoxDrawingCommon
+	ld a, [wDoNotWaitForButtonPressAfterDisplayingText]; make DisplayTextID wait for button press
+	and a
+	ld b, a
 	call CheckPikachuFollowingPlayer
 	jr nz, .doNotReturnPikachu
 	callfar IsStarterPikachuInOurParty
@@ -68,8 +52,6 @@ DisplayPokemonCenterDialogue_::
 .doNotReturnPikachu
 	lb bc, 1, 0
 	call Func_6ebb
-	ld hl, PokemonFightingFitText
-	call PrintText
 	callfar IsStarterPikachuInOurParty
 	jr nc, .notInParty
 	lb bc, 15, 0
@@ -89,13 +71,7 @@ DisplayPokemonCenterDialogue_::
 	call UpdateSprites
 	call LoadFontTilePatterns
 	jr .done
-.declinedHealing
-	call LoadScreenTilesFromBuffer1 ; restore screen
 .done
-	ld hl, PokemonCenterFarewellText
-	call PrintText
-	call UpdateSprites
-	ret
 
 Func_6eaa:
 	ld a, $1
@@ -122,28 +98,6 @@ Func_6ebb:
 	call SpriteFunc_34a1
 	ret
 
-PokemonCenterWelcomeText:
-	text_far _PokemonCenterWelcomeText
-	text_end
-
-ShallWeHealYourPokemonText:
-	text_pause
-	text_far _ShallWeHealYourPokemonText
-	text_end
-
 NeedYourPokemonText:
 	text_far _NeedYourPokemonText
-	text_end
-
-PokemonFightingFitText:
-	text_far _PokemonFightingFitText
-	text_end
-
-PokemonCenterFarewellText:
-	text_pause
-	text_far _PokemonCenterFarewellText
-	text_end
-
-LooksContentText:
-	text_far _LooksContentText
 	text_end
